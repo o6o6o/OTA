@@ -228,7 +228,6 @@ void BootLoader_CMD(void)
                 Bsp_At24c02_Read_Page(0x08, buf, OTA_VER_NUM_SIZE);
                 buf[OTA_VER_NUM_SIZE] = '\0';
                 printf("VER: [%s]\r\n", buf);
-                printf("rx_len = %d  idle_cnt = %d", rx_len, idle_cnt);
 
                 BootLoader_CMD_SHOW();
             }
@@ -245,7 +244,6 @@ void BootLoader_CMD(void)
             uint8_t Complement_Number = RX_UpdataABuf[2];      //序号反码
             uint16_t CRC_Val = 0;
             static uint32_t blk;
-            //printf("rx_len = %d\r\n", rx_len);
             /**********************处理一帧数据帧头SOH(0X04)*****************************/
             if (rx_len == RX_Frame_Size && RX_UpdataABuf[0] == 0x01) {
                 BootStaFlag &= ~IAR_XMODEC_FLAG;    // 收到第一包就停止发 'C'
