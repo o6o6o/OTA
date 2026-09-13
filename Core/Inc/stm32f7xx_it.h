@@ -32,7 +32,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern volatile uint32_t idle_cnt;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

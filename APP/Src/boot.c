@@ -23,10 +23,12 @@ extern UpdataAHandle_t UpdataA_CB;
 extern circular_buf_t *Rx_Cir_BufHandle;  //串口接收环形缓冲区句柄
 extern uint8_t volatile cmd_flag;
 extern uint16_t volatile rx_len;
-static uint8_t Cmd_Buf[1];  //接收指令数组
-static uint8_t RX_UpdataABuf[RX_Frame_Size];    //接收更新A区数据数组
-static uint8_t RX_OTAVerBuf[OTA_VER_NUM_SIZE + 1];
 extern uint32_t BootStaFlag;
+extern volatile uint32_t idle_cnt;
+
+static uint8_t Cmd_Buf[8];  //接收指令数组
+static uint8_t RX_UpdataABuf[RX_Frame_Size + 1];    //接收更新A区数据数组
+static uint8_t RX_OTAVerBuf[OTA_VER_NUM_SIZE + 1];
 
 void BootLoader_Branch(void) 
 {
@@ -226,11 +228,9 @@ void BootLoader_CMD(void)
                 Bsp_At24c02_Read_Page(0x08, buf, OTA_VER_NUM_SIZE);
                 buf[OTA_VER_NUM_SIZE] = '\0';
                 printf("VER: [%s]\r\n", buf);
+                printf("rx_len = %d  idle_cnt = %d", rx_len, idle_cnt);
+
                 BootLoader_CMD_SHOW();
-            }
-            else if (!strcmp(Cmd_Buf, "5")) {
-                printf("Please select a block to download the program(1~9)\r\n");
-                BootStaFlag |= IAR_CMA5_FLAG;   //将标志位置1
             }
             else if (!strcmp(Cmd_Buf, "7")) {
                 printf("Restart STM32\r\n");
@@ -240,15 +240,16 @@ void BootLoader_CMD(void)
     
         /**********************启用Xmodem协议进行文件传输*****************************/
         else if (BootStaFlag & IAR_XMODED_FLAG) {
-            Circular_Buf_Take(Rx_Cir_BufHandle, &RX_UpdataABuf);    //从环形缓冲区拿串口接收到的一帧数据一共133字节,有效数据128字节
+            Circular_Buf_Take(Rx_Cir_BufHandle, RX_UpdataABuf);    //从环形缓冲区拿串口接收到的一帧数据一共133字节,有效数据128字节
             uint8_t Serial_Number = RX_UpdataABuf[1];          //序号码
             uint8_t Complement_Number = RX_UpdataABuf[2];      //序号反码
             uint16_t CRC_Val = 0;
             static uint32_t blk;
-
+            //printf("rx_len = %d\r\n", rx_len);
             /**********************处理一帧数据帧头SOH(0X04)*****************************/
             if (rx_len == RX_Frame_Size && RX_UpdataABuf[0] == 0x01) {
                 BootStaFlag &= ~IAR_XMODEC_FLAG;    // 收到第一包就停止发 'C'
+                
                 CRC_Val = BootLoade_CRC16_XMODE(&RX_UpdataABuf[3], Valid_Data);
                 //判断序号码+序号反码是否等于0xFF
                 if ((Serial_Number + Complement_Number) != 0xFF){
@@ -272,23 +273,8 @@ void BootLoader_CMD(void)
 
                 //处理凑满8次的数据 1K
                 if (UpdataA_CB.XmodemNB % (BUFSIZE / Valid_Data) == 0) {
-                    //如果检测到BootStaFlag的IAR_CMA5_FLAG标志位被置1则将数据保存到外部Flash否则直接写入内部Flash
-                    if (BootStaFlag & IAR_CMA5_FLAG) {
-                        static uint8_t erasure_flag = 1;
-                        //写之前先擦除外部Flash
-                        if (erasure_flag) {
-                            erasure_flag = 0;
-                            Bsp_W25q256_Erasure_Sector_Multi(BACKUP_BLOCK_START + 
-                                (UpdataA_CB.UpdataNB * BACKUP_BLOCK_SIZE), 224);
-                        }
-                        
-                        //将1K数据保存到外部Flash
-                        Bsp_W25q256_Write_Page(BACKUP_BLOCK_START + 
-                                (UpdataA_CB.UpdataNB * BACKUP_BLOCK_SIZE), &UpdataA_CB.Upadtabuf, BUFSIZE);
-                    } else {
                         Bsp_Internal_Flash_Write(APP_START + blk * BUFSIZE, 
                             &UpdataA_CB.Upadtabuf, BUFSIZE / 4);
-                    }
                 }
             }   
             /**********************处理EOT(0X04)*****************************/
@@ -330,13 +316,6 @@ void BootLoader_CMD(void)
                 printf("Incorrect length of OTA version number\r\n");
                 BootLoader_CMD_SHOW();
                 return ;
-            }
-        }
-        /*********************下载程序到外部Flash**************************/
-        else if (BootStaFlag & IAR_CMA5_FLAG) {
-            if (rx_len == 1 && RX_UpdataABuf[0] >= '1' && RX_UpdataABuf[0] <= '9') {
-                UpdataA_CB.UpdataNB = RX_UpdataABuf[0] - 0x30;  //将要写入的块的序号保存起来
-                BootStaFlag |= (IAR_XMODEC_FLAG|IAR_XMODED_FLAG); //Xmodem传输标志位置1
             }
         }
     }

@@ -32,6 +32,8 @@ extern uint8_t rx_cir_buf[BUFSIZE];
 extern uint8_t dma_buf[BUFSIZE];
 extern volatile uint16_t rx_len;
 uint8_t volatile cmd_flag = 0;
+
+volatile uint32_t idle_cnt = 0;   // 全局
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -215,12 +217,12 @@ void USART1_IRQHandler(void)
   if(__HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE) != RESET) {
       //清楚空闲中断标志
       __HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_IDLE);
-
+      idle_cnt++;
       //停止dma再搬运数据
       HAL_UART_DMAStop(&huart1);
 
       //计算dma搬运数据的长度
-      uint16_t rx_len = BUFSIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+      rx_len = BUFSIZE - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
 
       //做一个安全机制，防止数组越界造成栈溢出
       if(rx_len > 0 && rx_len < BUFSIZE) {

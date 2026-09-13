@@ -50,12 +50,9 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-extern OTAInfoHandle_t OTAInfo;
 extern circular_buf_t *Rx_Cir_BufHandle;  //串口接收环形缓冲区句柄
 extern uint8_t rx_cir_buf[BUFSIZE];
 extern uint8_t dma_buf[BUFSIZE];
-extern uint8_t volatile cmd_flag;
-extern uint16_t volatile rx_len;
 extern UpdataAHandle_t UpdataA_CB;
 /* USER CODE END PM */
 
@@ -109,7 +106,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  DWT_Delay_Init();
+  DWT_Delay_Init(); //初始化DWT
   printf("hello here is B section\r\n");
 
 #if AT24C02_TEST

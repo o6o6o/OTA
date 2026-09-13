@@ -19,7 +19,6 @@
 #define IAR_XMODEC_FLAG     0X00000001
 #define IAR_XMODED_FLAG     0X00000002
 #define OTA_SET_VER_FLASG   0X00000004
-#define IAR_CMA5_FLAG       0X00000008
 
 #define OTA_VER_NUM_SIZE    26
 
@@ -30,7 +29,6 @@ typedef struct{
 
 typedef struct{
     uint8_t Upadtabuf[BUFSIZE]; //1K
-    uint8_t UpdataNB;
     uint32_t XmodemNB;
     uint32_t XmodemTime;
     uint16_t XmodemCRC;
