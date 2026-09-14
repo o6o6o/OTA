@@ -27,8 +27,9 @@ extern uint32_t BootStaFlag;
 extern volatile uint32_t idle_cnt;
 
 static uint8_t Cmd_Buf[8];  //接收指令数组
-static uint8_t RX_UpdataABuf[RX_Frame_Size + 1];    //接收更新A区数据数组
+static uint8_t RX_UpdataABuf[RX_Frame_Size + 1];    //接收保存通过Xmodem传输过来的A区程序
 static uint8_t RX_OTAVerBuf[OTA_VER_NUM_SIZE + 1];
+
 
 void BootLoader_Branch(void) 
 {
@@ -129,7 +130,7 @@ static uint8_t BootLoader_Enter_CMD(uint8_t Tinmeout)
         if (cmd_flag) {
             Circular_Buf_Take(Rx_Cir_BufHandle, Cmd_Buf);
             cmd_flag = 0;
-            if (!strcmp(Cmd_Buf, "w")) 
+            if (!strcmp(Cmd_Buf, "w") || !strcmp(Cmd_Buf, "W")) 
                 return 1;
         }
 
@@ -162,6 +163,7 @@ void BootLoader_CMD(void)
 
     if (cmd_flag) {
         cmd_flag = 0;
+        //保存串口接收到的数据
         if (!BootStaFlag) {
             Circular_Buf_Take(Rx_Cir_BufHandle, Cmd_Buf);
             if (!strcmp(Cmd_Buf, "1")) {
@@ -188,7 +190,7 @@ void BootLoader_CMD(void)
                 UpdataA_CB.XmodemNB = 0;
             }
             else if (!strcmp(Cmd_Buf, "3")) {
-                printf("Please enter the OTA version number. The format should be as follows: VER-1.0.0-2026-10-01-12:0\r\n");
+                printf("Please enter the OTA version number.The format should be as follows: VER-1.0.0-2026-10-01-12:0\r\n");
                 BootStaFlag |= OTA_SET_VER_FLASG;
             }
             else if (!strcmp(Cmd_Buf, "4")) {
@@ -196,15 +198,17 @@ void BootLoader_CMD(void)
                 Bsp_At24c02_Read_Page(0x08, buf, OTA_VER_NUM_SIZE);
                 buf[OTA_VER_NUM_SIZE] = '\0';
                 printf("VER: [%s]\r\n", buf);
-
                 BootLoader_CMD_SHOW();
+            }
+            else if (!strcmp(Cmd_Buf, "5")) {
+                BootStaFlag |= OTA_IAR_CMD5_FLASG;
+                printf("Please select the block (1~8) to download and send the corresponding .bin file\r\n");
             }
             else if (!strcmp(Cmd_Buf, "7")) {
                 printf("Restart STM32\r\n");
                 NVIC_SystemReset();
             }
         }
-    
         /**********************启用Xmodem协议进行文件传输*****************************/
         else if (BootStaFlag & IAR_XMODED_FLAG) {
             Circular_Buf_Take(Rx_Cir_BufHandle, RX_UpdataABuf);    //从环形缓冲区拿串口接收到的一帧数据一共133字节,有效数据128字节
@@ -259,7 +263,17 @@ void BootLoader_CMD(void)
                 NVIC_SystemReset();     //重启stm32
             }    
         }
-        /**********************设置OTA版本号*****************************/
+        /************IAR下载程序到外部Flash标志位处理****************/
+        else if(BootStaFlag & OTA_IAR_CMD5_FLASG) {
+            Circular_Buf_Take(Rx_Cir_BufHandle, Cmd_Buf);
+            if (rx_len = 1 && Cmd_Buf[0] >= 0x31 && Cmd_Buf[0] <= 0x39) {
+                BootStaFlag |= (IAR_XMODEC_FLAG|IAR_XMODED_FLAG);
+               OTAInfo.UpdataNB = Cmd_Buf[0] - 0x30;
+               printf("block:%d\r\n", OTAInfo.UpdataNB);
+            }
+        }
+
+        /*********************设置OTA版本号/*********************/
         else if (BootStaFlag & OTA_SET_VER_FLASG) {
             int temp;
             Circular_Buf_Take(Rx_Cir_BufHandle, &RX_OTAVerBuf);     //接收数据

@@ -27,11 +27,92 @@ Project File Date:  09/14/2026
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'D:\keil5\ARM\ARMCLANG\Bin'
 Build target 'OTA'
-compiling main.c...
+../APP/Src/boot.c(133): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  133 |             if (!strcmp(Cmd_Buf, "w") || !strcmp(Cmd_Buf, "W")) 
+      |                         ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(133): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  133 |             if (!strcmp(Cmd_Buf, "w") || !strcmp(Cmd_Buf, "W")) 
+      |                                                  ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(169): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  169 |             if (!strcmp(Cmd_Buf, "1")) {
+      |                         ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(179): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  179 |             else if (!strcmp(Cmd_Buf, "2")) {
+      |                              ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(192): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  192 |             else if (!strcmp(Cmd_Buf, "3")) {
+      |                              ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(196): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  196 |             else if (!strcmp(Cmd_Buf, "4")) {
+      |                              ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(203): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  203 |             else if (!strcmp(Cmd_Buf, "5")) {
+      |                              ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(207): warning: passing 'uint8_t[8]' (aka 'unsigned char[8]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  207 |             else if (!strcmp(Cmd_Buf, "7")) {
+      |                              ^~~~~~~
+D:\keil5\ARM\ARMCLANG\bin\..\include\string.h(125): note: passing argument to parameter here
+  125 | extern _ARMABI int strcmp(const char * /*s1*/, const char * /*s2*/) __attribute__((__nonnull__(1,2)));
+      |                                              ^
+../APP/Src/boot.c(247): warning: incompatible pointer types passing 'uint8_t (*)[1024]' (aka 'unsigned char (*)[1024]') to parameter of type 'uint32_t *' (aka 'unsigned int *') [-Wincompatible-pointer-types]
+  247 |                             &UpdataA_CB.Upadtabuf, BUFSIZE / 4);
+      |                             ^~~~~~~~~~~~~~~~~~~~~
+../BSP/Inc\bsp_internal_flash.h(10): note: passing argument to parameter 'pdata' here
+   10 | HAL_StatusTypeDef Bsp_Internal_Flash_Write(uint32_t addr, uint32_t *pdata, uint32_t size);
+      |                                                                     ^
+../APP/Src/boot.c(258): warning: incompatible pointer types passing 'uint8_t (*)[1024]' (aka 'unsigned char (*)[1024]') to parameter of type 'uint32_t *' (aka 'unsigned int *') [-Wincompatible-pointer-types]
+  258 |                         &UpdataA_CB.Upadtabuf, (UpdataA_CB.XmodemNB % (BUFSIZE / Valid_Data) * Valid_Data) / 4);
+      |                         ^~~~~~~~~~~~~~~~~~~~~
+../BSP/Inc\bsp_internal_flash.h(10): note: passing argument to parameter 'pdata' here
+   10 | HAL_StatusTypeDef Bsp_Internal_Flash_Write(uint32_t addr, uint32_t *pdata, uint32_t size);
+      |                                                                     ^
+../APP/Src/boot.c(269): warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+  269 |             if (rx_len = 1 && Cmd_Buf[0] >= 0x31 && Cmd_Buf[0] <= 0x39) {
+      |                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../APP/Src/boot.c(269): note: place parentheses around the assignment to silence this warning
+  269 |             if (rx_len = 1 && Cmd_Buf[0] >= 0x31 && Cmd_Buf[0] <= 0x39) {
+      |                        ^                                              
+      |                 (                                                     )
+../APP/Src/boot.c(269): note: use '==' to turn this assignment into an equality comparison
+  269 |             if (rx_len = 1 && Cmd_Buf[0] >= 0x31 && Cmd_Buf[0] <= 0x39) {
+      |                        ^
+      |                        ==
+../APP/Src/boot.c(276): warning: '/*' within block comment [-Wcomment]
+  276 |         /*********************<C9><E8><D6><C3>OTA<B0>汾<BA><C5>/*********************/
+      |                                                                ^
+../APP/Src/boot.c(279): warning: incompatible pointer types passing 'uint8_t (*)[27]' (aka 'unsigned char (*)[27]') to parameter of type 'uint8_t *' (aka 'unsigned char *') [-Wincompatible-pointer-types]
+  279 |             Circular_Buf_Take(Rx_Cir_BufHandle, &RX_OTAVerBuf);     //<BD><D3><CA><D5><CA><FD><BE><DD>
+      |                                                 ^~~~~~~~~~~~~
+../Core/Inc\circular_buf.h(19): note: passing argument to parameter 'buf' here
+   19 | void Circular_Buf_Take(circular_buf_t *cir_buf, uint8_t *buf);
+      |                                                          ^
+13 warnings generated.
+compiling boot.c...
 linking...
-Program Size: Code=20360 RO-data=1296 RW-data=16 ZI-data=4792  
+Program Size: Code=20616 RO-data=1380 RW-data=16 ZI-data=5816  
 FromELF: creating hex file...
-"OTA\OTA.axf" - 0 Error(s), 0 Warning(s).
+"OTA\OTA.axf" - 0 Error(s), 13 Warning(s).
 
 <h2>Software Packages used:</h2>
 

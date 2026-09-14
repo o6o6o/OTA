@@ -16,15 +16,19 @@
 #define APP_END             (APP_START + APP_SIZE - 1)
 
 #define OTA_SET_FLAG        0x11223344
-#define IAR_XMODEC_FLAG     0X00000001
-#define IAR_XMODED_FLAG     0X00000002
-#define OTA_SET_VER_FLASG   0X00000004
+#define IAR_XMODEC_FLAG     0x00000001
+#define IAR_XMODED_FLAG     0x00000002
+#define OTA_SET_VER_FLASG   0x00000004
+#define OTA_IAR_CMD5_FLASG  0x00000008
 
 #define OTA_VER_NUM_SIZE    26
+#define OTA_ExterFlash_BlockNB   9
 
 typedef struct{
     uint32_t OTA_FLAG;
     uint8_t OAT_VER[OTA_VER_NUM_SIZE];
+    uint8_t UpdataNB;
+    uint8_t OTAUpdataBuf[BUFSIZE];   //用于更新外部Flash程序数组
 }OTAInfoHandle_t;
 
 typedef struct{
