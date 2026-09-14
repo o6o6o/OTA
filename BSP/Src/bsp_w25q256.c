@@ -78,7 +78,7 @@ void Bsp_W25q256_Read_page(uint32_t addr, uint8_t *pdata, uint16_t len)
 
 
 /**
- * @brief  扇区擦除（实际使用 0xD8 块擦除，擦除 64KB）
+ * @brief  扇区擦除(实际使用 0xD8 块擦除，擦除 64KB  0x20 块擦除， 擦除4KB)
  * @param  addr  擦除起始地址
  * @retval 1 成功，0 失败
  */
@@ -96,7 +96,7 @@ uint8_t Bsp_W25q256_Erasure_Sector(uint32_t addr)
     CS_HIGH;             // 拉高片选，结束写使能
     HAL_Delay(1);        // 等待芯片内部处理
 
-    uint8_t cmd[4] = {0xD8, (addr>>16)&0xFF, (addr>>8)&0xFF, addr&0xFF}; // 块擦除命令 0xD8 + 3字节地址
+    uint8_t cmd[4] = {0x20, (addr>>16)&0xFF, (addr>>8)&0xFF, addr&0xFF}; // 块擦除命令 0x20 + 3字节地址
     CS_LOW;              // 拉低片选
     delay_us(1);         // 短延时
     if (HAL_SPI_Transmit(&hspi1, cmd, 4, 100) != HAL_OK) { // 发送擦除命令，失败则退出
@@ -135,7 +135,7 @@ uint8_t Bsp_W25q256_Erasure_Sector(uint32_t addr)
  */
 void Bsp_W25q256_Erasure_Sector_Multi(uint32_t addr, uint8_t cnt) {
     for (uint8_t i = 0; i < cnt; i++) { // 循环擦除
-        Bsp_W25q256_Erasure_Sector(addr + (i * 0x1000)); // 每次地址增加 4KB，但擦除函数实际擦 64KB，需注意
+        Bsp_W25q256_Erasure_Sector(addr + (i * 0x1000)); // 每次地址增加 4KB
     }
 }
 
