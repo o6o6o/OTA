@@ -76,7 +76,6 @@ void Bsp_W25q256_Read_page(uint32_t addr, uint8_t *pdata, uint16_t len)
     delay_us(1);                             // 短延时
 }
 
-
 /**
  * @brief  扇区擦除(实际使用 0xD8 块擦除，擦除 64KB  0x20 块擦除， 擦除4KB)
  * @param  addr  擦除起始地址
@@ -106,7 +105,6 @@ uint8_t Bsp_W25q256_Erasure_Sector(uint32_t addr)
     }
     CS_HIGH;             // 拉高片选，启动擦除
     delay_us(1);         // 短延时
-
     
     uint8_t tx_status[2] = {0x05, 0xFF}; // 读状态寄存器命令
     uint8_t rx_status[2] = {0};          // 接收缓冲区
