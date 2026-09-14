@@ -129,7 +129,7 @@ uint8_t Bsp_W25q256_Erasure_Sector(uint32_t addr)
 }
 
 /**
- * @brief  连续擦除多个扇区（每次擦除 64KB 块，地址间隔 0x1000 实际是 4KB，调用时注意）
+ * @brief  连续擦除多个扇区（每次擦除 4KB 块，地址间隔 0x1000 实际是 4KB，调用时注意）
  * @param  addr  起始地址
  * @param  cnt   擦除次数
  */

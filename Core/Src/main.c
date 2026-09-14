@@ -44,7 +44,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define AT24C02_TEST 0
-#define W25Q256_TEST 1
+#define W25Q256_TEST 0
 #define INTERNAL_FLASH  0
 /* USER CODE END PD */
 
@@ -123,11 +123,11 @@ int main(void)
   uint8_t w_data[256];
   uint8_t r_data[256];
 
-  for (uint16_t i = 0; i < 257; i++) {
+  for (uint16_t i = 0; i < 256; i++) {
     w_data[i] = i;
   }
 
-  Bsp_W25q256_Erasure_Sector(InterFlash_ADDR); //从0x00000000开始擦除4KB
+  Bsp_W25q256_Erasure_Sector_Multi(InterFlash_ADDR, 1); //从0x00000000开始擦除4KB
   HAL_Delay(100);
   for (uint8_t cnt = 0; cnt < 16; cnt ++) {
     Bsp_W25q256_Write_Page(InterFlash_ADDR + cnt * 256, w_data, 256);  //只能支持1页写入最多256不支持跨页写入
@@ -170,7 +170,7 @@ int main(void)
   Circular_Buf_Init(Rx_Cir_BufHandle, rx_cir_buf, BUFSIZE);  //初始化串口环形缓冲区
 	HAL_UART_Receive_DMA(&huart1, dma_buf, BUFSIZE);//打开dma搬运
  
-  //BootLoader_Branch();
+  BootLoader_Branch();
 
   /* USER CODE END 2 */
 
@@ -179,16 +179,16 @@ int main(void)
   while (1)
   {
 
-  //   HAL_Delay(10);
-  //   BootLoader_CMD();
+    HAL_Delay(10);
+    BootLoader_CMD();
 
-  //  if (BootStaFlag & IAR_XMODEC_FLAG) {
-  //     if (UpdataA_CB.XmodemTime >= 100) {
-  //         printf("C");
-  //         UpdataA_CB.XmodemTime = 0;
-  //     }
-  //     UpdataA_CB.XmodemTime ++;
-  //  }
+   if (BootStaFlag & IAR_XMODEC_FLAG) {
+      if (UpdataA_CB.XmodemTime >= 100) {
+          printf("C");
+          UpdataA_CB.XmodemTime = 0;
+      }
+      UpdataA_CB.XmodemTime ++;
+   }
 
     /* USER CODE END WHILE */
 
