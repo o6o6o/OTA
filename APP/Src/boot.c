@@ -58,38 +58,6 @@ __attribute__((naked)) void MSR_SP(uint32_t addr) {
     );
 }
 
-//void LOAD_A(uint32_t addr)
-//{
-//    //判断栈顶指针是否在SRAM的地址范围里
-//    if((*(uint32_t *)addr >= SRAM_MEMORY_STARTADDR) && (*(uint32_t *)addr <= SRAM_MEMORY_ENDADDR)) {
-//        MSR_SP(*(uint32_t *)addr);  //将栈顶指针SP指向A区起始地址0x08008000
-//        load_A = (load_a)*(uint32_t *)(addr + 4);   //让load_A指向复位向量 
-//        load_A();//将PC指针指向load_A间接指向复位向量 
-//    }
-//}
-
-//void BootLoader_Clear_Register(void) 
-//{
-//    //复位GPIO
-//    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
-//    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_1);
-
-//    HAL_UART_DMAStop(&huart1);//关闭DMA
-
-//    //复位USART1
-//    HAL_UART_DeInit(&huart1);
-
-//    //复位I2C2
-//    HAL_I2C_DeInit(&hi2c2);
-
-//    //复位SPI1
-//    HAL_SPI_DeInit(&hspi1);
-//	
-//	__disable_irq();              // 关闭所有中断，之后在A区要重新打开
-
-//    HAL_SuspendTick();    //关闭SystemTick
-//}
-
 void LOAD_A(uint32_t addr)
 {
     uint32_t stack_ptr = *(uint32_t *)addr;
